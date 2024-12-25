@@ -14,3 +14,8 @@ This repository includes:
 - **Datasets:** Data preprocessing steps and preprocessed datasets used for training and testing of ML/DL models.
 - **Documentation:** Step-by-step guides for replicating the experiments.
 - **Visualization Tools:** Visualize drought patterns and model outputs.
+
+
+### Comparison of Ground Truth, Persistence, Climatology & CNN predictions
+
+![](../deep-learning-drought-prediction/image/cnn-predicted.png)
