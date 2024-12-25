@@ -18,4 +18,4 @@ This repository includes:
 
 ### Comparison of Ground Truth, Persistence, Climatology & CNN predictions
 
-![](../deep-learning-drought-prediction/image/cnn-predicted.png)
+![CNN](/image/cnn-predicted.png)
