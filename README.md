@@ -1,11 +1,7 @@
 
 # Deep Learning Approaches to Drought Prediction
 
-
 ## **Introduction**
-
-
-<style>body {text-align: justify}</style>
 
 Welcome to the GitHub repository for **Deep Learning Approaches to Drought Prediction**. This project explores the application of advanced deep learning models to predict drought conditions with improved accuracy and timeliness.  We aim to develop AI-driven solutions that support climate resilience and water resource management.
 
@@ -18,11 +14,17 @@ Machine/Deep learning techniques have the potential to revolutionize drought for
 Our work focuses on employing cutting-edge techniques, such as **Recurrent Neural Networks (RNNs)**, **Long Short-Term Memory (LSTM) networks**, **Convolutional Neural Networks (CNNs)**, and **Transformer** models, to analyze complex spatio-temporal patterns of drought. Drought predictions can help decision-makers mitigate the impacts of droughts and plan for sustainable resource allocation.
 
 The overarching goals of the project are:  
-1. Prepare and compile features/predictors from various datasets relevant for drought prediction.  
-2. Calculate the Standardized Precipitation Index (SPI) as a standardized drought indicator.  
-3. Implement and evaluate deep learning models for drought prediction.   
-4. Develop a machine learning workflow that is both reproducible and scalable to other regions or predictors. 
-5. Develop actionable early warning tool to support decision-making.    
+
+
+1. _Prepare and compile features/predictors from various datasets relevant for drought prediction._
+
+2. _Calculate the Standardized Precipitation Index (SPI) as a standardized drought indicator._  
+
+3. _Implement and evaluate deep learning models for drought prediction._  
+
+4. _Develop a machine learning workflow that is both reproducible and scalable to other regions or predictors._ 
+
+5. _Develop actionable early warning tool to support decision-making._
 
 This repository includes:
 - **Code and Models:** Implementation of deep learning architectures for drought prediction.
