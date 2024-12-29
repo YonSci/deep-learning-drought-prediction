@@ -224,8 +224,114 @@ This methodology ensures accurate and actionable drought predictions while empha
 
 ---
 
+### Drought Prediction Using Convolutional Neural Network (CNN) as a Baseline Model 
 
-### Comparison of Ground Truth, Persistence, Climatology & CNN predictions
+**Convolutional Neural Network (CNN)** architecture is ideal for applications in climate science, where spatial data plays a crucial role. It can be used for:
+
+- Drought prediction.
+- Precipitation classification.
+- Soil moisture estimation.
+- Climate variable forecasting.
+
+Key Components of the CNN Model
+
+**Input Data**: The training set consists of spatial data grids, which are reshaped into smaller tiles or patches for easier processing.
+
+**Convolutional Layers**: Multiple convolutional layers (e.g., Conv Layer 1, Conv Layer 2, etc.) are employed to extract features from the spatial data.
+Each convolutional layer applies a series of filters (e.g., 8, 16, 32, 64 filters) with a kernel size of 5x5 to detect spatial patterns and hierarchical features.
+
+**ReLU Activation**: Non-linear activation functions are applied after each convolution to introduce non-linearity and improve feature extraction.
+Pooling Layers:
+
+**Max-Pooling Layers** (2x2): Reduce the spatial dimensions of feature maps, making computations efficient and focusing on the most important features.
+
+**Fully Connected Layer**: After the convolutional and pooling layers, the extracted features are flattened and passed into a fully connected layer with 1024 neurons.
+This layer captures global relationships and prepares the data for classification or regression tasks.
+
+**Output Layer**: The final layer provides a classification or prediction result, represented as one of several possible categories (e.g., C? with options 1, 2, 3, 4).
+
+**Forward Pass and Backpropagation**
+
+- **Forward Pass**: The input data passes through the convolutional, pooling, and fully connected layers to generate predictions.
+- **Backpropagation**: The model adjusts weights and biases during training by calculating errors and propagating them backward to optimize performance.
+
+![CNN](./image/cnn3.png)
+
+
+This workflow demonstrates the process of preparing data, building and training a CNN model, making predictions, and evaluating performance for drought prediction using SPI. It highlights the superiority of CNNs over traditional baseline methods. Below is a step-by-step breakdown:
+
+### **1. Data Preparation**
+- **Extract Train, Validation, and Test Data:**
+  The dataset is divided into training, validation, and testing subsets based on specified time periods.
+
+```Python
+# training dataset 
+train_years = slice('1981', '2012')
+# validation dataset 
+valid_years = slice('2013', '2018')
+# test dataset
+test_years = slice('2019', '2023')
+```
+
+**Calculate the percentage of the data used**
+
+```Python
+train_time_range = slice('1981-01-01', '2013-01-01')
+valid_time_range = slice('2013-01-01', '2019-01-01')
+test_time_range = slice('2019-01-01', '2023-01-01')
+
+# Convert string dates to datetime objects
+train_start = datetime.strptime(train_time_range.start, '%Y-%m-%d')
+train_stop = datetime.strptime(train_time_range.stop, '%Y-%m-%d')
+valid_start = datetime.strptime(valid_time_range.start, '%Y-%m-%d')
+valid_stop = datetime.strptime(valid_time_range.stop, '%Y-%m-%d')
+test_start = datetime.strptime(test_time_range.start, '%Y-%m-%d')
+test_stop = datetime.strptime(test_time_range.stop, '%Y-%m-%d')
+
+# Calculate the percentage of the data used
+train_percentage = (train_stop - train_start).days / (test_stop - train_start).days
+valid_percentage = (valid_stop - valid_start).days / (test_stop - train_start).days
+test_percentage = (test_stop - test_start).days / (test_stop - train_start).days
+```
+
+
+| Data Type | Start Date | End Date | Percentage of Total Data |
+| --- | --- | --- | --- |
+| Training | 1981-01-01 | 2013-01-01 | 76.19%|
+| Validation | 2013-01-01 | 2019-01-01 | 10.00% |
+| Test | 2019-01-01 | 2023-01-01 | 5.00%|
+
+**Number of years in each dataset**
+
+```python
+train_year = (train_stop - train_start).days / 365.25
+valid_year = (valid_stop - valid_start).days / 365.25
+test_year = (test_stop - test_start).days / 365.25
+```
+
+| Data Type | Number of Years |
+| --- | --- |
+| Training | 32 years |
+| Validation | 6 years |
+| Test | 4 years |
+
+
+
+
+- **Normalization:**
+  The training data's mean and standard deviation are computed and used to normalize the data across all subsets for consistent scaling.
+
+
+
+## **1. Data Preparation**
+- **Extract Train, Validation, and Test Data:**
+  The dataset is divided into training, validation, and testing subsets based on specified time periods.
+
+ 
+
+
+
+#### Comparison of Ground Truth, Persistence, Climatology & CNN predictions
 
 The following image shows the comparison of ground truth, persistence, climatology, and CNN predictions:
 
