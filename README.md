@@ -50,44 +50,49 @@ In this project , we employ a robust and scalable  multi-step approach to develo
 
 - Predictor data collection: Monthly average **ERA5-Land reanalysis** data with a 9 km resolution, spanning the period from 1981 to 2020, was utilized as predictor data.
 
-    - Local/regional predictors
+1) Local/regional predictors
 
-        1) Temperature
-        2) Precipitation
-        3) Soil Temperature
-        4) Wind and  Pressure
-        5) Vegetation
-        6) Radiation and Heat
-        7) Evaporation 
-        8) Soil Water
-        9) Runoff
+    - Temperature
+    - Precipitation
+    - Soil Temperature
+    - Wind and  Pressure
+    - Vegetation
+    - Radiation and Heat
+    - Evaporation 
+    - Soil Water
+    - Runoff
 
-    - Atmospheric and Oceanic predictors 
-    
-        - Both atmospheric and oceanic indices were gathered from 1981-2022.
-
-        - Nino region SST indices (Nino 1+2, Nino 3, Nino3.4, Nino 4)  from Extended Reconstruction SSTs Version 5 (ERSSTv5) dataset is collected.
-
-        - Southern Oscillation Index (SOI).
+2) Atmospheric and Oceanic predictors 
+   - Both atmospheric and oceanic indices were gathered from 1981-2022
+   
+   - Nino region SST indices (Nino 1+2, Nino 3, Nino3.4, Nino 4)  from Extended Reconstruction SSTs Version 5 (ERSSTv5) dataset is collected.
+   
+   - Southern Oscillation Index (SOI).
+   
+   - North Atlantic Oscillation (NAO) Index.
+   
+   - Indian Ocean Dipole (IOD) Index.
+   
+   - The collected atmospheric climate indices include the following:
+   
+        - Outgoing Long Wave Radiation Equator.
         
-        - North Atlantic Oscillation (NAO) Index.
+        - Zonal Winds Equator (200mb).
         
-        - Indian Ocean Dipole (IOD) Index.
-
-        - The collected atmospheric climate indices include the following:
+        - Trade Wind Index (zonal) West Pacific (850mb)
         
-            - Outgoing Long Wave Radiation Equator.
-            - Zonal Winds Equator (200mb).
-            - Trade Wind Index (zonal) West Pacific (850mb)
-            - Trade Wind Index (zonal) Central Pacific  (850mb)
-            - Trade Wind Index (zonal) East Pacific  (850mb)
-            - Zonally Average Temperature Anomalies ( 500mb)
+        - Trade Wind Index (zonal) Central Pacific  (850mb)
+        
+        - Trade Wind Index (zonal) East Pacific  (850mb)
+        
+        - Zonally Average Temperature Anomalies ( 500mb)
 
 #### **Preprocessing Steps**
-- Handle missing values 
-- Ensure temporal alignment of datasets
-- **SPI Calculation**
-    - NCL code was created to compute the Standardized Precipitation Index (SPI) at various intervals, including SPI1, SPI2, SPI3, SPI4, SPI6, SPI12, SPI15, SPI24 and others.
+
+- **Handle missing values** 
+- **Ensure temporal alignment of datasets**
+
+- **SPI Calculation:** NCL code was created to compute the Standardized Precipitation Index (SPI) at various intervals, including SPI1, SPI2, SPI3, SPI4, SPI6, SPI12, SPI15, SPI24 and others.
 
 ![CNN](./image/spi3-2015.png)
 
@@ -261,9 +266,8 @@ This layer captures global relationships and prepares the data for classificatio
 This workflow demonstrates the process of preparing data, building and training a CNN model, making predictions, and evaluating performance for drought prediction using SPI. It highlights the superiority of CNNs over traditional baseline methods. Below is a step-by-step breakdown:
 
 ### **1. Data Preparation**
-- **Extract Train, Validation, and Test Data:**
 
-The dataset is divided into training, validation, and testing subsets based on specified time periods.
+**Extract Train, Validation, and Test Data:** The dataset is divided into training, validation, and testing subsets based on specified time periods.
 
 | Data Type | Start Date | End Date | Percentage of Total Data |
 | --- | --- | --- | --- |
@@ -271,7 +275,7 @@ The dataset is divided into training, validation, and testing subsets based on s
 | Validation | 2013-01-01 | 2019-01-01 | 10.00% |
 | Test | 2019-01-01 | 2023-01-01 | 5.00%|
 
-- **Number of years in each dataset**
+**Number of years in each dataset**
 
 | Data Type | Number of Years |
 | --- | --- |
@@ -280,44 +284,52 @@ The dataset is divided into training, validation, and testing subsets based on s
 | Test | 4 years |
 
 
-- **Normalization:**
+**Normalization:**
   The training data's mean and standard deviation are computed and used to normalize the data across all subsets for consistent scaling.
 
 ### **2. Feature and Target Variable Preparation**
-  - Features  are derived by removing the last lead_steps elements.
-  - Targets are the corresponding values offset by lead_steps.
+
+Features  are derived by removing the last lead_steps elements.
+
+Targets are the corresponding values offset by lead_steps.
 
 
-### **3. CNN Model Definition**
+### **3. CNN Model Definition/Architecture**
 
-- **Model Architecture:**
-  - A sequential model with `three Conv2D` layers is created.
-  - The first two layers use `128 filters` with `tanh` activation and a kernel size of `3`.
-  - The final layer outputs predictions using one filter.
+A sequential model with `three Conv2D` layers is created.
 
-- **Model Summary**
+The first two layers use `128 filters` with `tanh` activation and a kernel size of `3`.
+  
+  The final layer outputs predictions using one filter.
 
-```
-Layer (type)                 Output Shape              Param #
-=================================================================
-conv2d (Conv2D)              (None, 16, 14, 128)       1280
-conv2d_1 (Conv2D)            (None, 16, 14, 128)       147584
-conv2d_2 (Conv2D)            (None, 16, 14, 1)         1153
-=================================================================
-Total params: 150,017
-Trainable params: 150,017
-Non-trainable params: 0
-```
 
-- **Total Parameters:** The model has a total of **150,017 parameters**.
-- **Trainable Parameters:** All 150,017 parameters are trainable since there are no frozen layers or non-trainable components.
+| **Layer (Type)**         | **Output Shape**        | **Parameters (#)** |
+|--------------------------|-------------------------|--------------------|
+| **conv2d (Conv2D)**      | (None, 16, 14, 128)    | 1,280              |
+| **conv2d_1 (Conv2D)**    | (None, 16, 14, 128)    | 147,584            |
+| **conv2d_2 (Conv2D)**    | (None, 16, 14, 1)      | 1,153              |
+---
+
+| **Total Parameters**     | **Trainable Parameters** | **Non-Trainable Parameters** |
+|--------------------------|--------------------------|------------------------------|
+| **150,017**              | **150,017**              | **0**                        |
+---
+
+**Total Parameters:** The model has a total of **150,017 parameters**. All 150,017 parameters are trainable since there are no frozen layers or non-trainable components.
 
 ![CNN](./image/model_architecture_cnn.png)
 
 ![CNN](./image/cnn4.png)
 
 
-- **Model Architecture Parameters**
+**Model Architecture Parameters**
+
+**Layer-wise Details:** The first convolutional layer uses 128 filters and applies a `tanh` activation function.  
+
+The second convolutional layer repeats the same configuration.  
+
+The final convolutional layer reduces the output to a single channel with no activation function (default linear activation).
+
 
 | **Layer**       | **Type**       | **Output Shape**     | **Filters** | **Kernel Size** | **Padding** | **Activation** | **Parameters** |
 |------------------|----------------|----------------------|-------------|-----------------|-------------|----------------|----------------|
@@ -326,73 +338,54 @@ Non-trainable params: 0
 | Conv Layer 2     | Conv2D         | (16, 14, 128)       | 128         | 3x3             | Same        | Tanh           | 147,584        |
 | Conv Layer 3     | Conv2D         | (16, 14, 1)         | 1           | 3x3             | Same        | None           | 1,153          |
 
----
-
-- **Layer-wise Details:**
-
-   - The first convolutional layer uses 128 filters and applies a `tanh` activation function.
-   - The second convolutional layer repeats the same configuration.
-   - The final convolutional layer reduces the output to a single channel with no activation function (default linear activation).
-
 
 
 
 ### **4. Training the CNN Model**
 
-- **Compilation:**
-  - The model is compiled with the `Adam` optimizer and `Mean Squared Error (MSE)` as the loss function.
-  - The `Mean Absolute Error (MAE)` is tracked as a performance metric.
+**Compilation:** The model is compiled with the `Adam` optimizer and `Mean Squared Error (MSE)` as the loss function. The `Mean Absolute Error (MAE)` is tracked as a performance metric.
 
-- **Early Stopping:**
-  - The training process stops if validation loss does not improve for 10 epochs, restoring the best weights.
-- **Model Fitting:**
-  - The model is trained using the training data, with validation data provided for monitoring.
+**Early Stopping:** The training process stops if validation loss does not improve for 10 epochs, restoring the best weights.
 
-- **Training Parameters**
+**Model Fitting:** The model is trained using the training data, with validation data provided for monitoring.
 
-```markdown
 | **Parameter**         | **Description**                       | **Value**       |
 |------------------------|---------------------------------------|-----------------|
-| **learning_rate**      | Step size for weight updates          | `0.001`         |
-| **optimizer**          | Optimization algorithm                | `Adam`          |
-| **loss**               | Function to evaluate performance      | `mse`           |
-| **metrics**            | Metric to track during training       | `mae`           |
-| **batch_size**         | Samples per gradient update           | `32`            |
-| **epochs**             | Total training iterations             | `20`            |
-| **validation_data**    | Dataset for validation                | `(X_valid, Y_valid)` |
-| **callbacks**          | Callback functions applied            | `early_stopping`|
+| **Learning_rate**      | Step size for weight updates          | `0.001`         |
+| **Optimizer**          | Optimization algorithm                | `Adam`          |
+| **Loss**               | Function to evaluate performance      | `mse`           |
+| **Metrics**            | Metric to track during training       | `mae`           |
+| **Batch Size**         | Samples per gradient update           | `32`            |
+| **Epochs**             | Total training iterations             | `20`            |
+| **Validation data**    | Dataset for validation                | `X_valid` & `Y_valid` |
+| **Callbacks**          | Callback functions applied            | `early_stopping`|
 
 
 ### **5. Prediction**
-- **Generate Predictions:**
-  - The trained model is used to predict SPI values for the training, validation, and testing periods.
-- **Rescaling Predictions:**
-  - Predictions are converted back to the original scale by reversing the normalization process using the stored mean and standard deviation.
 
----
+**Generate Predictions:** The trained model is used to predict SPI values for the training, validation, and testing periods.
+
+**Rescaling Predictions:** Predictions are converted back to the original scale by reversing the normalization process using the stored mean and standard deviation.
 
 
 ### **5. Model Evaluation**
 
-- **Area-Weighted RMSE:** The `Root Mean Square Error (RMSE)` is computed for the CNN model and compared with baseline approaches like `persistence` and `climatology`.
+**Area-Weighted RMSE:** The `Root Mean Square Error (RMSE)` is computed for the CNN model and compared with baseline approaches like `persistence` and `climatology`.
 
-- **Results Table:**
-  - A table is created to summarize the RMSE values for all models, showing that the CNN model achieves the best performance.
+A table is created to summarize the RMSE values for all models, showing that the CNN model achieves the best performance.
 
-- **Key Results:**
 | Metric         | Persistence | Climatology | CNN  |
 |-----------------|-------------|-------------|------|
 | **RMSE**       | 0.68        | 1.02        | 0.65 |
 
-
-
-- **Training and Validation Loss Plot**
+**Training and Validation Loss Plot**
 
 The blue line represents the training loss, which steadily decreases over epochs. This indicates that the model is learning from the training data and improving its performance. Thus, the model performs reasonably well on the training set.
 
 The orange line represents the validation loss, which fluctuates but does not decrease as consistently as the training loss. There is a gap between the training and validation loss, which could suggest that the model is `slightly overfitting` the training data.
 
- Around later epochs, the training loss stabilizes, but the validation loss continues to fluctuate. This might indicate that the model's performance on unseen data (validation set) is not improving as much as its performance on the training set. The fluctuations in validation loss suggest that the model may benefit from further tuning, such as:
+Around later epochs, the training loss stabilizes, but the validation loss continues to fluctuate. This might indicate that the model's performance on unseen data (validation set) is not improving as much as its performance on the training set. The fluctuations in validation loss suggest that the model may benefit from further tuning, such as:
+
 - Reducing the complexity of the model (e.g., fewer layers or filters).
 - Applying regularization techniques like Dropout or L2 regularization.
 - Using a smaller learning rate for finer adjustments.
@@ -415,7 +408,7 @@ In this project we used the KerasTuner to perform hyperparameter tuning. Various
 4) `Hyperband`: Combines random sampling and adaptive resource allocation for efficient tuning.
 
 
-- **Hyperparameter Search Space**
+**Hyperparameter Search Space**
 
 The following hyperparameters space were optimized:
 
@@ -425,7 +418,7 @@ The following hyperparameters space were optimized:
 - Batch Size (batch_size): [32, 64, 128]  
 - Number of Epochs (epochs): [10, 20, 50, 100, 150, 200, 250, 300, 350]  
 
-- **Hyperparameter Optimization Results**
+**Hyperparameter Optimization Results**
 
 The table below summarizes the results of various optimization methods, including the best validation loss and corresponding hyperparameters:
 
@@ -436,14 +429,14 @@ The table below summarizes the results of various optimization methods, includin
 | **Hyperband**             | 0.450903         | 128             | 3               | Tanh           |
 | **Bayesian Optimization** | 0.430887         | 96              | 4               | Tanh           |
 
-- **Best Hyperparameters Identified**
+**Best Hyperparameters Identified**
 
 The hyperparameter tuning process demonstrated that `Bayesian Optimization` outperformed other methods by achieving the lowest validation loss. The best hyperparameters found can now be used to retrain the model for final evaluation and deployment. This process highlights the effectiveness of systematic hyperparameter tuning in improving model performance.
 
-- **Best Model Performance**
-    - **Best Val Loss Achieved**: 0.430887
-    - **Optimization Method**: Bayesian Optimization
+**Best Model Performance**
+- Best Val Loss: achieved by Bayesian Optimization with a value of 0.430887.
 
+- The best values for the `Bayesian Optimization` method are given in the table bellow:
 
 | **Hyperparameter**         | **Best Value** |
 |-----------------------------|----------------|
@@ -453,25 +446,24 @@ The hyperparameter tuning process demonstrated that `Bayesian Optimization` outp
 | **Batch Size**              | 32 (Default)   |
 | **Number of Epochs**        | 10 (Fixed for Search) |
 
----
+
 
 
 ### **7. Final Prediction**
 
-The final prediction is based on the best-performing model, which was trained using the hyperparameters identified through
-Bayesian Optimization.
+The final prediction is generated using the best-performing model parameters identified through the hyperparameter tuning process. The model was retrained with these optimized hyperparameters and evaluated on the test dataset. Predictions were made for the central Ethiopia region, recognized as one of the homogeneous rainfall zones in the country by Ethiopian Meteorological Institute (EMI) , and the results are presented below.
 
-
-- **Comparison Map for Ground Truth, Persistence, Climatology & CNN predictions**
+**Comparison Map for Ground Truth, Persistence, Climatology & CNN predictions**
 
 The following image shows the comparison of ground truth, persistence, climatology, and CNN predictions:
 
 ![CNN](./image/cnn-predicted.png)
 
+
 ---
 
 **Contact Us**
 
-Teferi D. Demissie | Climate Scientist  | International Livestock Research Institute (ILRI) | t.demissie@cgiar.org | Mobile: +251 944 115131
+**Teferi D. Demissie** | Climate Scientist  | International Livestock Research Institute (ILRI) | t.demissie@cgiar.org | Mobile: +251 944 115131
 
-Yonas Mersha | Data Science Consultant | United Nations Economic Commission for Africa (UNECA) | yonas.yigezu@un.org | Mobile: +251 948216748
+**Yonas Mersha** | Data Science Consultant | United Nations Economic Commission for Africa (UNECA) | yonas.yigezu@un.org | Mobile: +251 948216748
