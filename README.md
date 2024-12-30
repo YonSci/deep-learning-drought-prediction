@@ -361,7 +361,7 @@ The final convolutional layer reduces the output to a single channel with no act
 | **Callbacks**          | Callback functions applied            | `early_stopping`|
 
 
-### **5. Prediction**
+### **5. Model Prediction**
 
 **Generate Predictions:** The trained model is used to predict SPI values for the training, validation, and testing periods.
 
@@ -412,11 +412,11 @@ In this project we used the KerasTuner to perform hyperparameter tuning. Various
 
 The following hyperparameters space were optimized:
 
-- Number of Filters (num_filters): [32, 64, 128, 256]  
-- Kernel Size (kernel_size): [2, 3, 5]  
-- Activation Function (activation): ['elu', 'relu', 'tanh']  
-- Batch Size (batch_size): [32, 64, 128]  
-- Number of Epochs (epochs): [10, 20, 50, 100, 150, 200, 250, 300, 350]  
+- Number of Filters (num_filters): `[32, 64, 128, 256]`  
+- Kernel Size (kernel_size): `[2, 3, 5]`  
+- Activation Function (activation): `['elu', 'relu', 'tanh']`  
+- Batch Size (batch_size): `[32, 64, 128]`  
+- Number of Epochs (epochs): `[10, 20, 50, 100, 150, 200, 250, 300, 350]`  
 
 **Hyperparameter Optimization Results**
 
@@ -434,7 +434,7 @@ The table below summarizes the results of various optimization methods, includin
 The hyperparameter tuning process demonstrated that `Bayesian Optimization` outperformed other methods by achieving the lowest validation loss. The best hyperparameters found can now be used to retrain the model for final evaluation and deployment. This process highlights the effectiveness of systematic hyperparameter tuning in improving model performance.
 
 **Best Model Performance**
-- Best Val Loss: achieved by Bayesian Optimization with a value of 0.430887.
+- Best Val Loss: achieved by Bayesian Optimization with a value of `0.430887`.
 
 - The best values for the `Bayesian Optimization` method are given in the table bellow:
 
@@ -445,9 +445,6 @@ The hyperparameter tuning process demonstrated that `Bayesian Optimization` outp
 | **Activation Function**     | Tanh           |
 | **Batch Size**              | 32 (Default)   |
 | **Number of Epochs**        | 10 (Fixed for Search) |
-
-
-
 
 ### **7. Final Prediction**
 
