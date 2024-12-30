@@ -262,38 +262,8 @@ This workflow demonstrates the process of preparing data, building and training 
 
 ### **1. Data Preparation**
 - **Extract Train, Validation, and Test Data:**
-  The dataset is divided into training, validation, and testing subsets based on specified time periods.
 
-```Python
-# training dataset 
-train_years = slice('1981', '2012')
-# validation dataset 
-valid_years = slice('2013', '2018')
-# test dataset
-test_years = slice('2019', '2023')
-```
-
-**Calculate the percentage of the data used**
-
-```Python
-train_time_range = slice('1981-01-01', '2013-01-01')
-valid_time_range = slice('2013-01-01', '2019-01-01')
-test_time_range = slice('2019-01-01', '2023-01-01')
-
-# Convert string dates to datetime objects
-train_start = datetime.strptime(train_time_range.start, '%Y-%m-%d')
-train_stop = datetime.strptime(train_time_range.stop, '%Y-%m-%d')
-valid_start = datetime.strptime(valid_time_range.start, '%Y-%m-%d')
-valid_stop = datetime.strptime(valid_time_range.stop, '%Y-%m-%d')
-test_start = datetime.strptime(test_time_range.start, '%Y-%m-%d')
-test_stop = datetime.strptime(test_time_range.stop, '%Y-%m-%d')
-
-# Calculate the percentage of the data used
-train_percentage = (train_stop - train_start).days / (test_stop - train_start).days
-valid_percentage = (valid_stop - valid_start).days / (test_stop - train_start).days
-test_percentage = (test_stop - test_start).days / (test_stop - train_start).days
-```
-
+The dataset is divided into training, validation, and testing subsets based on specified time periods.
 
 | Data Type | Start Date | End Date | Percentage of Total Data |
 | --- | --- | --- | --- |
@@ -301,13 +271,7 @@ test_percentage = (test_stop - test_start).days / (test_stop - train_start).days
 | Validation | 2013-01-01 | 2019-01-01 | 10.00% |
 | Test | 2019-01-01 | 2023-01-01 | 5.00%|
 
-**Number of years in each dataset**
-
-```python
-train_year = (train_stop - train_start).days / 365.25
-valid_year = (valid_stop - valid_start).days / 365.25
-test_year = (test_stop - test_start).days / 365.25
-```
+- **Number of years in each dataset**
 
 | Data Type | Number of Years |
 | --- | --- |
@@ -316,22 +280,189 @@ test_year = (test_stop - test_start).days / 365.25
 | Test | 4 years |
 
 
-
-
 - **Normalization:**
   The training data's mean and standard deviation are computed and used to normalize the data across all subsets for consistent scaling.
 
+### **2. Feature and Target Variable Preparation**
+  - Features  are derived by removing the last lead_steps elements.
+  - Targets are the corresponding values offset by lead_steps.
 
 
-## **1. Data Preparation**
-- **Extract Train, Validation, and Test Data:**
-  The dataset is divided into training, validation, and testing subsets based on specified time periods.
+### **3. CNN Model Definition**
 
- 
+- **Model Architecture:**
+  - A sequential model with `three Conv2D` layers is created.
+  - The first two layers use `128 filters` with `tanh` activation and a kernel size of `3`.
+  - The final layer outputs predictions using one filter.
+
+- **Model Summary**
+
+```
+Layer (type)                 Output Shape              Param #
+=================================================================
+conv2d (Conv2D)              (None, 16, 14, 128)       1280
+conv2d_1 (Conv2D)            (None, 16, 14, 128)       147584
+conv2d_2 (Conv2D)            (None, 16, 14, 1)         1153
+=================================================================
+Total params: 150,017
+Trainable params: 150,017
+Non-trainable params: 0
+```
+
+- **Total Parameters:** The model has a total of **150,017 parameters**.
+- **Trainable Parameters:** All 150,017 parameters are trainable since there are no frozen layers or non-trainable components.
+
+![CNN](./image/model_architecture_cnn.png)
+
+![CNN](./image/cnn4.png)
+
+
+- **Model Architecture Parameters**
+
+| **Layer**       | **Type**       | **Output Shape**     | **Filters** | **Kernel Size** | **Padding** | **Activation** | **Parameters** |
+|------------------|----------------|----------------------|-------------|-----------------|-------------|----------------|----------------|
+| Input Layer      | Input          | (16, 14, 1)         | -           | -               | -           | -              | -              |
+| Conv Layer 1     | Conv2D         | (16, 14, 128)       | 128         | 3x3             | Same        | Tanh           | 1,280          |
+| Conv Layer 2     | Conv2D         | (16, 14, 128)       | 128         | 3x3             | Same        | Tanh           | 147,584        |
+| Conv Layer 3     | Conv2D         | (16, 14, 1)         | 1           | 3x3             | Same        | None           | 1,153          |
+
+---
+
+- **Layer-wise Details:**
+
+   - The first convolutional layer uses 128 filters and applies a `tanh` activation function.
+   - The second convolutional layer repeats the same configuration.
+   - The final convolutional layer reduces the output to a single channel with no activation function (default linear activation).
 
 
 
-#### Comparison of Ground Truth, Persistence, Climatology & CNN predictions
+
+### **4. Training the CNN Model**
+
+- **Compilation:**
+  - The model is compiled with the `Adam` optimizer and `Mean Squared Error (MSE)` as the loss function.
+  - The `Mean Absolute Error (MAE)` is tracked as a performance metric.
+
+- **Early Stopping:**
+  - The training process stops if validation loss does not improve for 10 epochs, restoring the best weights.
+- **Model Fitting:**
+  - The model is trained using the training data, with validation data provided for monitoring.
+
+- **Training Parameters**
+
+```markdown
+| **Parameter**         | **Description**                       | **Value**       |
+|------------------------|---------------------------------------|-----------------|
+| **learning_rate**      | Step size for weight updates          | `0.001`         |
+| **optimizer**          | Optimization algorithm                | `Adam`          |
+| **loss**               | Function to evaluate performance      | `mse`           |
+| **metrics**            | Metric to track during training       | `mae`           |
+| **batch_size**         | Samples per gradient update           | `32`            |
+| **epochs**             | Total training iterations             | `20`            |
+| **validation_data**    | Dataset for validation                | `(X_valid, Y_valid)` |
+| **callbacks**          | Callback functions applied            | `early_stopping`|
+
+
+### **5. Prediction**
+- **Generate Predictions:**
+  - The trained model is used to predict SPI values for the training, validation, and testing periods.
+- **Rescaling Predictions:**
+  - Predictions are converted back to the original scale by reversing the normalization process using the stored mean and standard deviation.
+
+---
+
+
+### **5. Model Evaluation**
+
+- **Area-Weighted RMSE:** The `Root Mean Square Error (RMSE)` is computed for the CNN model and compared with baseline approaches like `persistence` and `climatology`.
+
+- **Results Table:**
+  - A table is created to summarize the RMSE values for all models, showing that the CNN model achieves the best performance.
+
+- **Key Results:**
+| Metric         | Persistence | Climatology | CNN  |
+|-----------------|-------------|-------------|------|
+| **RMSE**       | 0.68        | 1.02        | 0.65 |
+
+
+
+- **Training and Validation Loss Plot**
+
+The blue line represents the training loss, which steadily decreases over epochs. This indicates that the model is learning from the training data and improving its performance. Thus, the model performs reasonably well on the training set.
+
+The orange line represents the validation loss, which fluctuates but does not decrease as consistently as the training loss. There is a gap between the training and validation loss, which could suggest that the model is `slightly overfitting` the training data.
+
+ Around later epochs, the training loss stabilizes, but the validation loss continues to fluctuate. This might indicate that the model's performance on unseen data (validation set) is not improving as much as its performance on the training set. The fluctuations in validation loss suggest that the model may benefit from further tuning, such as:
+- Reducing the complexity of the model (e.g., fewer layers or filters).
+- Applying regularization techniques like Dropout or L2 regularization.
+- Using a smaller learning rate for finer adjustments.
+
+- Early stopping might have been used to prevent overfitting.
+
+![CNN](./image/traning_validation_loss.png)
+
+
+### **6. Hyperparameter Tuning**
+
+In this project we used the KerasTuner to perform hyperparameter tuning. Various methods were employed to optimize the model's performance, with a specific focus on finding the best combination of hyperparameters. Hyperparameter Optimization Methods used :
+
+1) `Grid Search`: Exhaustively searches over all possible combinations of hyperparameters.
+
+2) `Random Search`: Selects hyperparameters randomly, offering faster exploration of the search space.
+
+3) `Bayesian Optimization`: Builds a probabilistic model to find the best hyperparameters efficiently.
+
+4) `Hyperband`: Combines random sampling and adaptive resource allocation for efficient tuning.
+
+
+- **Hyperparameter Search Space**
+
+The following hyperparameters space were optimized:
+
+- Number of Filters (num_filters): [32, 64, 128, 256]  
+- Kernel Size (kernel_size): [2, 3, 5]  
+- Activation Function (activation): ['elu', 'relu', 'tanh']  
+- Batch Size (batch_size): [32, 64, 128]  
+- Number of Epochs (epochs): [10, 20, 50, 100, 150, 200, 250, 300, 350]  
+
+- **Hyperparameter Optimization Results**
+
+The table below summarizes the results of various optimization methods, including the best validation loss and corresponding hyperparameters:
+
+| **Hyperparameter Method** | **Best Val Loss** | **Num Filters** | **Kernel Size** | **Activation** |
+|---------------------------|-------------------|-----------------|-----------------|----------------|
+| **Grid Search**           | 0.439737         | 32              | 2               | Tanh           |
+| **Random Search**         | 0.437542         | 160             | 2               | Elu            |
+| **Hyperband**             | 0.450903         | 128             | 3               | Tanh           |
+| **Bayesian Optimization** | 0.430887         | 96              | 4               | Tanh           |
+
+- **Best Hyperparameters Identified**
+
+The hyperparameter tuning process demonstrated that `Bayesian Optimization` outperformed other methods by achieving the lowest validation loss. The best hyperparameters found can now be used to retrain the model for final evaluation and deployment. This process highlights the effectiveness of systematic hyperparameter tuning in improving model performance.
+
+- **Best Model Performance**
+    - **Best Val Loss Achieved**: 0.430887
+    - **Optimization Method**: Bayesian Optimization
+
+
+| **Hyperparameter**         | **Best Value** |
+|-----------------------------|----------------|
+| **Number of Filters**       | 96             |
+| **Kernel Size**             | 4              |
+| **Activation Function**     | Tanh           |
+| **Batch Size**              | 32 (Default)   |
+| **Number of Epochs**        | 10 (Fixed for Search) |
+
+---
+
+
+### **7. Final Prediction**
+
+The final prediction is based on the best-performing model, which was trained using the hyperparameters identified through
+Bayesian Optimization.
+
+
+- **Comparison Map for Ground Truth, Persistence, Climatology & CNN predictions**
 
 The following image shows the comparison of ground truth, persistence, climatology, and CNN predictions:
 
