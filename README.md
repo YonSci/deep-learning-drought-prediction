@@ -1,5 +1,9 @@
 
-# Deep Learning Approaches to Drought Prediction
+# Predicting Drought with Cutting-Edge Deep Learning Approaches
+
+ <div align="justify"> 
+
+
 
 ## **Introduction**
 
@@ -253,7 +257,7 @@ Pooling Layers:
 **Fully Connected Layer**: After the convolutional and pooling layers, the extracted features are flattened and passed into a fully connected layer with 1024 neurons.
 This layer captures global relationships and prepares the data for classification or regression tasks.
 
-**Output Layer**: The final layer provides a classification or prediction result, represented as one of several possible categories (e.g., C? with options 1, 2, 3, 4).
+**Output Layer**: The final layer provides a classification or prediction result.
 
 **Forward Pass and Backpropagation**
 
@@ -464,3 +468,5 @@ The following image shows the comparison of ground truth, persistence, climatolo
 **Teferi D. Demissie** | Climate Scientist  | International Livestock Research Institute (ILRI) | t.demissie@cgiar.org | Mobile: +251 944 115131
 
 **Yonas Mersha** | Data Science Consultant | United Nations Economic Commission for Africa (UNECA) | yonas.yigezu@un.org | Mobile: +251 948216748
+
+</div>
